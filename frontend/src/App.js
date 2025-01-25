@@ -1,8 +1,8 @@
-import React, { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Navbar/Navbar';
-import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+import React, { lazy, Suspense, useEffect } from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+import Navbar from './Navbar/Navbar';
 
 // Lazy load components to improve performance
 const Home = lazy(() => import('./Home/Home'));
