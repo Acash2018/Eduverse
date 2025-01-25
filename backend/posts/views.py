@@ -3,6 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import *
 from .serializers import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import Post  # Ensure your Post model is imported
+from .serializers import PostSerializer  # Ensure the serializer is imported
+
 
 
 class PostListView(generics.ListCreateAPIView):
