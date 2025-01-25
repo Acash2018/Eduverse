@@ -17,6 +17,9 @@ const NewPost = ({ isOpen, onClose }) => {
 
   const categories = ["Post", "Project", "Research", "Job", "Service"];
 
+  console.log("Rendering Editor..."); // Debug
+
+
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
