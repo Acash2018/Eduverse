@@ -1,3 +1,5 @@
+import { Editor } from "@tinymce/tinymce-react";
+import axios from "axios";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./NewPost.css";
@@ -41,22 +43,28 @@ const NewPost = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validatePost()) return;
     try {
       const token = localStorage.getItem("access_token"); // Assuming you store your token here
       const response = await axios.post(
         "http://127.0.0.1:8000/api/posts/create/",
-        { title, content },
+        {title: postTitle,
+          content: postContent,
+          category: selectedCategory, },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setSuccess("Post created successfully!");
-      setTitle("");
-      setContent("");
+      setPostTitle(""); // Clear the title
+      setPostContent(""); // Clear the content
+      setSelectedCategory(""); // Reset the category
+      setFiles([]); // Reset file selection
+      setErrors([]); // Clear any errors
+      navigate("/posts"); // Redirect to the posts page
     } catch (err) {
-      setError("Failed to create the post. Please try again.");
+      setErrors("Failed to create the post. Please try again.");
     }
   };
 
@@ -66,34 +74,62 @@ const NewPost = ({ isOpen, onClose }) => {
   return (
     <div className="new-post-container">
       <h1>Create a New Post</h1>
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
+      {errors.length > 0 && (
+        <div className="error-messages">
+          {errors.map((error, index) => (
+            <p key={index}>{error}</p>
+          ))}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
             type="text"
             id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={postTitle}
+            onChange={(e) => setPostTitle(e.target.value)}
+            placeholder="Enter post title..."
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="content">Content</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+          <label htmlFor="category">Category</label>
+          <select
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
             required
-          ></textarea>
+          >
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
-        <button type="submit">Submit</button>
+        <div className="form-group">
+          <label htmlFor="content">Content</label>
+          <Editor
+            apiKey="your-api-key"
+            value={postContent}
+            onEditorChange={(content) => setPostContent(content)}
+            init={{
+                height: 300,
+                menubar: false,
+                plugins: ["lists", "link"],
+                toolbar: "bold italic underline | bullist numlist | link",
+            }}
+          />
+        </div>
+        
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "Submit"}
+        </button>
       </form>
     </div>
   );
-}
-  
-
+};
 
 export default NewPost;
