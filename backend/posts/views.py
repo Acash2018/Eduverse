@@ -165,3 +165,12 @@ class ReportDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
     
+class PostCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]  # Ensure the user is authenticated
+
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(author=request.user)  # Save the post with the authenticated user as the author
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
