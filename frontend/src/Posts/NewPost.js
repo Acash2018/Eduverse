@@ -115,7 +115,7 @@ const NewPost = ({ isOpen, onClose }) => {
         <div className="form-group">
           <label htmlFor="content">Content</label>
           <Editor
-            apiKey="your-api-key"
+            apiKey="your-api-key" //ERROR: No API key provided
             value={postContent}
             onEditorChange={(content) => setPostContent(content)}
             init={{
