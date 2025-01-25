@@ -18,5 +18,5 @@ urlpatterns = [
     path("favorite/<int:pk>/", FavoriteDetailView.as_view(), name="favorite-detail"),
     path("report/", ReportListView.as_view(), name="report-list"),
     path("report/<int:pk>/", ReportDetailView.as_view(), name="report-detail"),
-    path('create/', PostDetailView.as_view(), name='post-create'),  # POST for creating a new post
+    path('create/', PostCreateView.as_view(), name='post-create'),  # POST for creating a new post
 ]
