@@ -6,8 +6,10 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .models import Post  # Ensure your Post model is imported
+from .models import Post,Comment  # Ensure your Post model is imported
 from .serializers import PostSerializer  # Ensure the serializer is imported
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 
 
 
@@ -180,3 +182,19 @@ class PostCreateView(APIView):
             serializer.save(author=request.user)  # Save the post with the authenticated user as the author
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_comment(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        comment_text = request.data.get("text")
+
+        if not comment_text:
+            return Response({"error": "Comment cannot be empty"}, status=400)
+
+        comment = Comment.objects.create(user=request.user, post=post, text=comment_text)
+        return Response(CommentSerializer(comment).data, status=201)
+
+    except Post.DoesNotExist:
+        return Response({"error": "Post not found"}, status=404)
