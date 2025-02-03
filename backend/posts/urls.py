@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
 from .views import PostCreateView, PostDetailView  # Import PostCreateView
+from .views import add_comment  # Import add_comment
 
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
     path("report/", ReportListView.as_view(), name="report-list"),
     path("report/<int:pk>/", ReportDetailView.as_view(), name="report-detail"),
     path('create/', PostCreateView.as_view(), name='post-create'),  # POST for creating a new post
+    path('posts/<int:post_id>/comment/', add_comment, name='add_comment'),  # POST for adding a comment to a post
 ]
